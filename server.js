@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const sessions = require('express-session');
 const cookieParser = require("cookie-parser");
@@ -5,15 +6,17 @@ const bodyParser= require('body-parser');
 const User = require("./models/user");
 const bcrypt = require('bcrypt');
 const app = express();
-const MongoClient = require('mongodb').MongoClient
+const mongoose = require('mongoose');
 const cors = require('cors');
+const CocktailsSchema = require('./models/CocktailsSchema');
+const cocktailsRoute = require('./routes/cocktails');
+// const user = require('./routes/user');
 
-const dbKey = 'mongodb+srv://kvin:ZTRxkwxXRNc9Dthz@cluster0.l02a3.mongodb.net/cocktails?retryWrites=true&w=majority';
+const dbKey = process.env.DB_KEY;
 const oneDay = 1000 * 60 * 60 * 24;
 // a variable to save a session
 const saltRounds = 10;
 
-// const user = require('./routes/user');
 
 
 
@@ -21,11 +24,13 @@ app.listen(3000, () => {
   console.log('server is listening 3000');
 });
 
+mongoose.connect(dbKey);
+
 app.use(sessions({
   secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
   saveUninitialized:true,
   cookie: { maxAge: oneDay },
-  resave: false 
+  resave: false
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -37,75 +42,70 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(cors());
 
-MongoClient.connect(dbKey,  {
-  useUnifiedTopology: true
-}, (err, client) => {
-  if (err) return console.error(err);
-
   console.log('Connected to Database');
-  const db = client.db('cocktails-order');
-  const cocktailsCollection = db.collection('cocktails');
-  const usersCollection = db.collection('users_cocktails');
+  // const cocktailsCollection =  mongoose.connection.collection('cocktails');
+  const usersCollection = mongoose.connection.collection('users_cocktails');
 
 
-  app.get('/cocktails', (req, res) => {
-    // res.sendFile('/Users/kevinjoya/github/project_3wa_back' + '/index.html');
-    const cursor = db.collection('cocktails').find().toArray()
-    .then(result => {
-      console.log(result);
-      res.status(200).json(result);
-      })
-      .catch(error => console.log(error))
+  app.use('/cocktails', cocktailsRoute);
 
-    console.log(cursor);
-  });
+  // app.get('/cocktails', async (req, res) => {
+  //   // res.sendFile('/Users/kevinjoya/github/project_3wa_back' + '/index.html');
+  //   try {
+  //     const result = await CocktailsSchema.find();
 
-  app.post('/cocktails', (req, res) => {
-    console.log(req.body);
+  //     res.status(200).json(result);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // });
 
-    cocktailsCollection.insertOne(req.body)
-      .then(result => {
-        console.log(result);
-        res.redirect('/cocktails');
-      })
-      .catch(error => console.error(error));
-  });
+  // app.post('/cocktails', (req, res) => {
+  //   console.log(req.body);
 
-  app.put('/cocktails', (req, res) => {
-    console.log(req.body);
+  //   cocktailsCollection.insertOne(req.body)
+  //     .then(result => {
+  //       console.log(result);
+  //       res.redirect('/cocktails');
+  //     })
+  //     .catch(error => console.error(error));
+  // });
 
-    cocktailsCollection.findOneAndUpdate(
-      { name: 'Smoothie' },
-      {
-        $set: {
-          name: req.body.name,
-          description: req.body.description
-        }
-      },
-      {
-        upsert: true
-      }
-    )
-      .then(result => {
-        console.log(result);
-        res.json('Success');
-      })
-      .catch(error => console.error(error))
-  })
+  // app.put('/cocktails', (req, res) => {
+  //   console.log(req.body);
 
-  app.delete('/cocktails', (req, res) => {
-    cocktailsCollection.deleteOne(
-      { name: req.body.name },
-    )
-    .then(result => {
-      if (result.deletedCount === 0) {
-        return res.json('No cocktail to delete')
-      }
+  //   cocktailsCollection.findOneAndUpdate(
+  //     { name: req.body.name },
+  //     {
+  //       $set: {
+  //         name: req.body.name,
+  //         description: req.body.description
+  //       }
+  //     },
+  //     {
+  //       upsert: true
+  //     }
+  //   )
+  //     .then(result => {
+  //       console.log(result);
+  //       res.json('Success');
+  //     })
+  //     .catch(error => console.error(error))
+  // })
 
-      // res.json(`Deleted Smoothie`)
-    })
-    .catch(error => console.error(error))
-  })
+  // app.delete('/cocktails', (req, res) => {
+  //   cocktailsCollection.deleteOne(
+  //     { name: req.body.name },
+  //   )
+  //   .then(result => {
+  //     if (result.deletedCount === 0) {
+  //       return res.json('No cocktail to delete')
+  //     }
+
+  //     // res.json(`Deleted Smoothie`)
+  //   })
+  //   .catch(error => console.error(error))
+  // })
 
   // app.get('/users',(req,res) => {
   //   console.log(req.session);
@@ -201,5 +201,5 @@ MongoClient.connect(dbKey,  {
       res.status(400).json({ message: "pas good" });
     }
   });
-});
+// });
 
