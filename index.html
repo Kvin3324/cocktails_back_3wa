@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <link rel="stylesheet" href="views/app.css">
+    <meta charset="UTF-8">
+    <title>MY APP</title>
+  </head>
+  <body>
+    <h1> May Node and Express be with you. </h1>
+    <form action="/orders" method="POST">
+      <input type="text" placeholder="name_cocktail" name="name">
+      <button type="submit">Submit</button>
+    </form>
+    <div>
+      <h2>Stop l'alcoolisme</h2>
+      <p>
+        Remplacer de la tise
+      </p>
+      <button id="update-button">Remplacer la boisson de type alcool</button>
+    </div>
+    <div>
+      <h2>Remove cocktail</h2>
+      <p>
+        Delete le cocktail des bois
+      </p>
+      <button id="delete-button">Delete cocktail des srabs</button>
+      <div id="message"></div>
+    </div>
+
+
+    <form action="/connection" method="post">
+      <h2>Login</h2>
+      <div class="input-field">
+        <input type="email" name="email" id="email" placeholder="Enter email">
+      </div>
+      <div class="input-field">
+        <input type="password" name="password" id="password" placeholder="Enter Password">
+      </div>
+      <input type="submit" value="LogIn">
+    </form>
+
+    <form action="/subscription" method="post">
+      <h2>Sign up</h2>
+      <div class="input-field">
+        <input type="text" name="username" id="username_new" placeholder="Enter Username">
+      </div>
+      <div class="input-field">
+        <input type="mail" name="email" id="email" placeholder="Enter email">
+      </div>
+      <div class="input-field">
+        <input type="password" name="password" id="password_new" placeholder="Enter Password">
+      </div>
+      <!-- <div class="input-field">
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password">
+      </div> -->
+      <input type="submit" value="Sign up">
+    </form>
+
+
+    <form action="/update_profile" method="patch">
+      <h2>update</h2>
+      <div class="input-field">
+        <input type="mail" name="email" placeholder="Enter email">
+      </div>
+      <div class="input-field">
+        <input type="password" name="password" placeholder="Enter Password">
+      </div>
+      <input type="submit" value="Sign up">
+    </form>
+
+    <form action="/delete/:email">
+      <input type="submit" value="Deleted profile">
+    </form>
+  </body>
+  <script src="/main.js"></script>
+</html>
