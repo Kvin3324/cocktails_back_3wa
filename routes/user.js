@@ -1,58 +1,44 @@
 // Importing modules
-const express = require("express");
-const router = express.Router();
+const mongoose = require('mongoose');
+const router = require("express").Router();
+const usersCollection = mongoose.connection.collection('users_cocktails');
 
-// Importing User Schema
-const User = require("../models/user");
 
-// User login api
-router.post("/connection", (req, res) => {
-  // Find user with requested email
-  User.findOne({ email: req.body.email }, function (err, user) {
-    if (user === null) {
-      return res.status(400).send({
-        message: "User not found.",
+router.patch('/update_profile', async (req, res) => {
+  try {
+    const body = req.body;
+    const newPswd = await new Promise((resolve, reject) => {
+      bcrypt.hash(body.password, saltRounds, function(err, hash) {
+        if (err) reject(err);
+
+        resolve(body.password = hash);
       });
-    } else {
-      if (user.validPassword(req.body.password)) {
-        return res.status(201).send({
-          message: "User Logged In",
-        });
-      } else {
-        return res.status(400).send({
-          message: "Wrong Password",
-        });
-      }
-    }
-  });
+    })
+
+    res.name = body.name;
+    res.email = body.email;
+    res.password = newPswd;
+
+    res.status(200).json({ message: "information updated" });
+  } catch (error) {
+    res.status(400).json({ error: "Invalid update" });
+  }
+})
+
+router.get('/logout',(req,res) => {
+  req.session.destroy();
+  res.redirect('/connection');
 });
 
-// User signup api
-router.post("/subscription", (req, res, next) => {
-  console.log('problem');
-  // Creating empty user object
-  let newUser = new User();
+router.delete('/delete/:email', async (req, res) => {
+  try {
+    await usersCollection.findOneAndDelete({email: req.body.email});
 
-  // Initialize newUser object with request data
-  (newUser.name = req.body.name),
-    (newUser.email = req.body.email),
-    (newUser.password = req.body.password);
-
-  // Call setPassword function to hash password
-  newUser.setPassword(req.body.password);
-
-  // Save newUser object to database
-  newUser.save((err, User) => {
-    if (err) {
-      return res.status(400).send({
-        message: "Failed to add user.",
-      });
-    } else {
-      return res.status(201).send({
-        message: "User added successfully.",
-      });
-    }
-  });
+    res.status(200).json({ message: "profile deleted" });
+    res.redirect('/');
+  } catch (error) {
+    res.status(400).json({ message: "Something went wrong" });
+  }
 });
-// Export module to allow it to be imported in other files
+
 module.exports = router;
