@@ -48,18 +48,14 @@ router.put('/', (req, res) => {
     })
 })
 
-router.delete('/', (req, res) => {
-  cocktailsCollection.deleteOne(
-    { name: req.body.name },
-  )
-  .then(result => {
-    if (result.deletedCount === 0) {
-      return res.json('No cocktail to delete')
-    }
-  })
-  .catch(error => {
+router.delete('/:id', async (req, res) => {
+  try {
+    await mongoose.model('Cocktails').deleteOne({_id: req.params.id});
+
+    res.status(200).json({ message: "Le cocktail a été supprimé"});
+  } catch (error) {
     res.status(401).json({ error: "Le cocktail n'a pas été supprimé"});
-  })
+  }
 })
 
 
