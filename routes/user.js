@@ -26,8 +26,8 @@ router.patch('/update_profile', async (req, res) => {
 })
 
 router.get('/logout',(req,res) => {
-  req.session.destroy();
-  res.redirect('/connection');
+  req.session = null;
+  res.redirect('/cocktails');
 });
 
 router.delete('/delete/:email', async (req, res) => {
