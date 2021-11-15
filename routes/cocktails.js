@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
 
       return res.status(200).json(result);
     } catch (error) {
-      res.status(401).json({ error: "Something went wrong" });
+      res.status(400).json({ error: "Something went wrong" });
     }
 })
 
@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 
       return res.status(200).json(result);
     } catch (error) {
-      res.status(401).json({ error: "Something went wrong" });
+      res.status(400).json({ error: "Something went wrong" });
     }
 })
 
@@ -30,41 +30,37 @@ router.post('/', async (req, res) => {
 
     res.redirect('/cocktails');
   } catch (error) {
-    res.status(401).json({ error: "Le cocktail n'a pas été créé"});
+    res.status(400).json({ error: "Le cocktail n'a pas été créé"});
   }
 })
 
-router.put('/', (req, res) => {
+router.put('/:id', async (req, res) => {
   console.log(req.body);
 
-  cocktailsCollection.findOneAndUpdate(
-    { name: req.body.name },
-    {
-      $set: {
-        name: req.body.name,
-        description: req.body.description
+  try {
+    const editCocktail = await CocktailsSchema.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        returnDocument: 'after',
+        lean: true
       }
-    },
-    {
-      upsert: true
-    }
-  )
-    .then(result => {
-      console.log(result);
-      res.json('Success');
-    })
-    .catch(error => {
-      res.status(401).json({ error: "Le cocktail n'a pas été modifié"});
-    })
+    );
+
+    res.status(200).json(editCocktail);
+  } catch (error) {
+    res.status(400).json({ error: "Le cocktail n'a pas été édité"});
+  }
+
 })
 
 router.delete('/:id', async (req, res) => {
   try {
-    await mongoose.model('Cocktails').deleteOne({_id: req.params.id});
+    await CocktailsSchema.deleteOne({_id: req.params.id});
 
     res.status(200).json({ message: "Le cocktail a été supprimé"});
   } catch (error) {
-    res.status(401).json({ error: "Le cocktail n'a pas été supprimé"});
+    res.status(400).json({ error: "Le cocktail n'a pas été supprimé"});
   }
 })
 
