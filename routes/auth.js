@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const usersCollection = mongoose.connection.collection('users_cocktails');
 
 // User login api
-router.post("/", async (req, res) => {
+router.post("/connection", async (req, res) => {
   const body = req.body;
   try {
     const user = await usersCollection.findOne({ email: body.email });
@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
 })
 
 // User signup api
-router.post('/', async (req, res) => {
+router.post('/subscription', async (req, res) => {
   if (req.body.password !== req.body.confirm_password) {
     return res.status(400).json({ message: "Confirm password not equals to password." });
   }
