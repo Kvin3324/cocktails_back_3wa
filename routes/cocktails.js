@@ -14,6 +14,16 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+      const result = await CocktailsSchema.findOne({_id: req.params.id});
+
+      return res.status(200).json(result);
+    } catch (error) {
+      res.status(401).json({ error: "Something went wrong" });
+    }
+})
+
 router.post('/', async (req, res) => {
   try {
     await cocktailsCollection.insertOne(req.body);
