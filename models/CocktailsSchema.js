@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
-// const {Schema, model } = require('mongoose');
 
 const CocktailsSchema = new Schema({
   name: String,
