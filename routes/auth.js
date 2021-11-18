@@ -35,7 +35,7 @@ router.post('/subscription', async (req, res) => {
   }
 
   await new Promise((resolve, reject) => {
-    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+    bcrypt.hash(req.body.password, 10, function(err, hash) {
       if (err) reject(err);
 
       resolve(req.body.password = hash);
