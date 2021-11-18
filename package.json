@@ -18,6 +18,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
+    "get-good-readme": "^2.1.0",
     "mongodb": "^4.1.4",
     "mongoose": "^6.0.12"
   },
