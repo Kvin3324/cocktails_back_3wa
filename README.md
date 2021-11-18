@@ -43,6 +43,11 @@ npm i / install
 
 Créer un fichier `.env` avec la variable `DB_KEY`
 
+## Lancer l'app
+```
+npm run dev
+```
+
 ## Usage 💡
 Ce repo contient l'api de l'app web `Cocktails-list`.
 
