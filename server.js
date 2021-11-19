@@ -16,7 +16,7 @@ mongoose.connect(dbKey);
 console.log('Connected to Database');
 
 app.listen(3000, () => {
-  res.status(200).json({ message: "Serveur en route !" });
+  console.log('Server listening on 3000');
 });
 
 app.use(sessions({
