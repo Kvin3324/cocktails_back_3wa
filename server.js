@@ -9,6 +9,7 @@ const cors = require('cors');
 const cocktailsRoute = require('./routes/cocktails');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/user');
+const ordersRoutes = require('./routes/orders');
 const dbKey = process.env.DB_KEY;
 const oneDay = 1000 * 60 * 60 * 24;
 
@@ -35,4 +36,4 @@ app.use(cors());
 app.use('/', authRoutes);
 app.use('/cocktails', cocktailsRoute);
 app.use('/user', usersRoutes);
-
+app.use('/orders', ordersRoutes);
